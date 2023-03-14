@@ -3,4 +3,6 @@ project(cpp-logics)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(cpp-logics main.cpp s0_basic/basic.cpp)
+add_executable(cpp-logics main.cpp s0_basic/basic.cpp
+        s1_introduction/introduction.cpp
+        s2_data_structures/structures.cpp)
