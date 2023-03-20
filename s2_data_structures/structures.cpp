@@ -117,3 +117,112 @@ int RecursiveFibonacci (int n)
         return 1;
     return RecursiveFibonacci(n - 1) + RecursiveFibonacci(n - 2);
 }
+
+/// BEGIN OF MyDequeueSized
+
+[[maybe_unused]] MyDequeueSized::MyDequeueSized(int _size): max_size_(_size) {
+    arr_.resize(max_size_);
+}
+
+[[maybe_unused]] void MyDequeueSized::push_back (int x)
+{
+    if (size_ == max_size_)
+        throw std::out_of_range{"MyDequeueSized > push_back: max_size_ reached"};
+    arr_[tail_] = x;
+    if (size_ == 0) {
+        tail_++;
+        head_ = max_size_ - 1;
+    } else if (tail_ == max_size_ - 1)
+        tail_ = 0;
+    else
+        tail_++;
+    size_++;
+}
+
+[[maybe_unused]] void MyDequeueSized::push_front (int x) ///!!
+{
+    if (size_ == max_size_)
+        throw std::out_of_range{"MyDequeueSized > push_front: max_size_ reached"};
+    arr_[head_] = x;
+    if (size_ == 0) {
+        tail_++;
+        head_ = max_size_ - 1;
+    } else if (head_ == 0)
+        head_ = max_size_ - 1;
+    else
+        head_--;
+    size_++;
+}
+
+[[maybe_unused]] int MyDequeueSized::pop_back ()
+{
+    if (size_ == 0)
+        throw std::out_of_range{"MyQueueSized > pop_back: empty MyQueueSized"};
+    int _h;
+    if (tail_ == 0)
+        _h = arr_[max_size_ - 1];
+    else
+        _h = arr_[tail_ - 1];
+    if (size_ == 1) {
+        head_ = 0;
+        tail_ = 0;
+    } else if (tail_ == 0) {
+        tail_ = max_size_ - 1;
+    } else
+        tail_--;
+    size_--;
+    return _h;
+}
+
+[[maybe_unused]] int MyDequeueSized::pop_front ()
+{
+    if (size_ == 0)
+        throw std::out_of_range{"MyQueueSized > pop_front: empty MyQueueSized"};
+    int _h;
+    if (head_ == max_size_ - 1)
+        _h = arr_[0];
+    else
+        _h = arr_[head_ + 1];
+    if (size_ == 1) {
+        head_ = 0;
+        tail_ = 0;
+    } else if (head_ == max_size_ - 1) {
+        head_ = 0;
+    } else
+        head_++;
+    size_--;
+    return _h;
+}
+/// END OF MyDequeueSized
+
+[[maybe_unused]] int ExecutePostfixNotationExpression(const std::vector<std::string>& _str) {
+    std::deque<int> _q;
+    for (std::string _s : _str) {
+        if (isdigit(_s[0]) || (_s.size() > 1 && _s[0] == '-'))
+            _q.push_back(stoi(_s));
+        else {
+            int d2 = _q.back();
+            _q.pop_back();
+            int d1 = _q.back();
+            _q.pop_back();
+            int d;
+            if (_s == "+")
+                d = d1 + d2;
+            else if (_s == "-")
+                d = d1 - d2;
+            else if (_s == "*")
+                d = d1 * d2;
+            else {
+                int d0 = d1 % d2;
+                if (d0 == 0)
+                    d = d1 / d2;
+                else if (d0 > 0)
+                    d = (d1 - d0) / d2;
+                else
+                    d = (d1 - d0) / d2 - 1;
+            }
+            _q.push_back(d);
+        }
+    }
+    return _q.back();
+}
